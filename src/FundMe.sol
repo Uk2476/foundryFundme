@@ -19,23 +19,23 @@ contract FundMe{
     }
     
     function withdraw() public {
-        for(i=0,,i++){
+        for(uint256 i=0;;i++){
             if(amountFundedByEachfunder[msg.sender] == 0){
                 break;
             }
             amountFundedByEachfunder[msg.sender] = 0;
         }
         funding = 0;
-        (bool callsuccess,bytes dataReturned)= payable(msg.sender).call{value:address(this).balance}("");
+        (bool callsuccess,bytes memory dataReturned)= payable(msg.sender).call{value:address(this).balance}("");
         require( callsuccess , withdrawalFailed());
         //reset all item of contract that we edited
         ////withdRAW The fundsv
     }
 
     function exchangeRate() public returns(uint256){
-        AggregatorV3Interface exchangerate = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306)
-        (,int256 price,,,)= exchangerate.latestRoundDate();
-        returns uint256(price*1e10);
+        AggregatorV3Interface exchangerate = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        (,int256 price,,,)= exchangerate.latestRoundData();
+        return uint256(price*1e10);
         //this will call the aggregator function and get usd to eth vlaue
  
     }
@@ -43,7 +43,7 @@ contract FundMe{
     function usdToEthConverter(uint256 usdAmount) public view returns(uint256) {
         uint256 usdToEth= exchangeRate();
         uint256 ethAmount= (usdAmount*usdToEth)/1e18;
-        returns (ethAmount);
+        return (ethAmount);
         //call the get price function and calculate its equivalent ethereum value 
     }
 
