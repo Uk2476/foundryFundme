@@ -1,29 +1,39 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.18;
 
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "../@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 contract FundMe{
 
     uint256 minimumUsd = 5e18 ;
-    //we have to convert this into eth so that our code is able to understand that 
+
+    address[] public funderAccounts;
+
+    mapping (address => uint256) amountFunded ;     
 
     function fund() public payable {
-        require (msg.value >= minimumUsd , "not send enough amount");
+        require (usdToEthConverter(msg.value) >= minimumUsd , "not send enough amount");
+        funderAccounts.push(msg.sender);
     }
     
-    function withdraw() public {}
+    function withdraw() public {
+        //reset all item of contract that we edited
+        ////withdRAW The fundsv
+    }
 
-    // get the current rate between usd and eth
-    function getPrice() public returns(uint256){
-        //contract address : 0x694AA1769357215DE4FAC081bf1f309aDC325306
+    function exchangeRate() public returns(uint256){
+        AggregatorV3Interface exchangerate = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306)
+        (,int256 price,,,)= exchangerate.latestRoundDate();
+        returns uint256(price*1e10);
         //this will call the aggregator function and get usd to eth vlaue
  
     }
 
-    //convert amount of usd into eth 
-    function priceConverter() public {
-        //this will call the get price function and calculate its equivalent ethereum value 
+    function usdToEthConverter(uint256 usdAmount) public view returns(uint256) {
+        uint256 usdToEth= exchangeRate();
+        uint256 ethAmount= (usdAmount*usdToEth)/1e18;
+        returns (ethAmount);
+        //call the get price function and calculate its equivalent ethereum value 
     }
 
 
