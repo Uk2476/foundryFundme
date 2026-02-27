@@ -3,9 +3,11 @@ pragma solidity ^0.8.18;
 
 import {AggregatorV3Interface} from "../@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
+error withdrawalFailed();
+
 contract FundMe{
 
-    uint256 public minimumUsd = 5e18 ;
+    uint256 public constant minimumUsd = 5e18 ;
     uint256 public funding;
 
     mapping (address => uint256) public amountFundedByEachfunder ;     
@@ -17,7 +19,15 @@ contract FundMe{
     }
     
     function withdraw() public {
-
+        for(i=0,,i++){
+            if(amountFundedByEachfunder[msg.sender] == 0){
+                break;
+            }
+            amountFundedByEachfunder[msg.sender] = 0;
+        }
+        funding = 0;
+        (bool callsuccess,bytes dataReturned)= payable(msg.sender).call{value:address(this).balance}("");
+        require( callsuccess , withdrawalFailed());
         //reset all item of contract that we edited
         ////withdRAW The fundsv
     }
