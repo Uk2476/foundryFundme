@@ -5,18 +5,19 @@ import {AggregatorV3Interface} from "../@chainlink/contracts/src/v0.8/shared/int
 
 contract FundMe{
 
-    uint256 minimumUsd = 5e18 ;
+    uint256 public minimumUsd = 5e18 ;
+    uint256 public funding;
 
-    address[] public funderAccounts;
-
-    mapping (address => uint256) amountFunded ;     
+    mapping (address => uint256) public amountFundedByEachfunder ;     
 
     function fund() public payable {
         require (usdToEthConverter(msg.value) >= minimumUsd , "not send enough amount");
-        funderAccounts.push(msg.sender);
+        amountFundedByEachfunder[msg.sender] = amountFundedByEachfunder[msg.sender] + msg.value ;
+        funding+=msg.value;
     }
     
     function withdraw() public {
+
         //reset all item of contract that we edited
         ////withdRAW The fundsv
     }
