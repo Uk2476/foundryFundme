@@ -1,7 +1,7 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.18;
 
-import {AggregatorV3Interface} from "../@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "../chainlink-brownie-contracts/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 error withdrawalFailed();
 
@@ -10,7 +10,20 @@ contract FundMe{
     uint256 public constant minimumUsd = 5e18 ;
     uint256 public funding;
 
-    mapping (address => uint256) public amountFundedByEachfunder ;     
+    address private Owner;
+    address private network;
+
+    mapping (address => uint256) public amountFundedByEachfunder ; 
+
+    modifier onlyOwner {
+        require(Owner==msg.sender, unauthorized());
+        _;
+    }    
+
+    constructor (unit256 memory networkAddress) {
+        Owner = msg.sender;
+        network = networkAddress;
+    }
 
     function fund() public payable {
         require (usdToEthConverter(msg.value) >= minimumUsd , "not send enough amount");
@@ -18,7 +31,7 @@ contract FundMe{
         funding+=msg.value;
     }
     
-    function withdraw() public {
+    function withdraw() public onlyOwner {
         for(uint256 i=0;;i++){
             if(amountFundedByEachfunder[msg.sender] == 0){
                 break;
@@ -32,7 +45,7 @@ contract FundMe{
         ////withdRAW The fundsv
     }
 
-    function exchangeRate() public returns(uint256){
+    function exchangeRate() public view returns(uint256){
         AggregatorV3Interface exchangerate = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
         (,int256 price,,,)= exchangerate.latestRoundData();
         return uint256(price*1e10);
