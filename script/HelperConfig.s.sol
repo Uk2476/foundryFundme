@@ -12,14 +12,18 @@ contract HelperConfig is Script {
     constructor () {
         if (block.chainId == 11155111){
             networkUsed = sepoliaId();
-        } else
+        } /*else {
+            networkUsed = anvilId();
+        }8*/
     }
 
     function sepoliaId() public pure returns(address){
         return 0x694AA1769357215DE4FAC081bf1f309aDC325306 ;
     }
 
-    function anvilId() public pure returns {}
+/*    function anvilId() public pure returns(address) {
+
+    }*/
 }
 
 
